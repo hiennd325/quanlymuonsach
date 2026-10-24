@@ -32,12 +32,6 @@ class ReportsView(ctk.CTkScrollableFrame):
             font=ctk.CTkFont(size=22, weight="bold"),
             text_color=THEME["text_primary"]
         ).pack(anchor="w")
-        ctk.CTkLabel(
-            title_box,
-            text="Tổng hợp số liệu vận hành, tỷ lệ mượn và cơ cấu danh mục sách",
-            font=ctk.CTkFont(size=12),
-            text_color=THEME["text_secondary"]
-        ).pack(anchor="w")
 
         # 4 Thẻ KPI bo góc chuẩn phong cách phẳng
         cards_grid = ctk.CTkFrame(self, fg_color="transparent")

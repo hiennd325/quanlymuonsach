@@ -28,12 +28,6 @@ class MembersView(ctk.CTkFrame):
             font=ctk.CTkFont(size=22, weight="bold"),
             text_color=THEME["text_primary"]
         ).pack(anchor="w")
-        ctk.CTkLabel(
-            title_box,
-            text="Hồ sơ thành viên, thông tin liên hệ và lịch sử mượn trả",
-            font=ctk.CTkFont(size=12),
-            text_color=THEME["text_secondary"]
-        ).pack(anchor="w")
 
         # Thanh tìm kiếm dạng viên thuốc
         search_box = ctk.CTkFrame(header, fg_color="transparent")

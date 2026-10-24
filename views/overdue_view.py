@@ -27,12 +27,6 @@ class OverdueView(ctk.CTkFrame):
             font=ctk.CTkFont(size=22, weight="bold"),
             text_color=THEME["text_primary"]
         ).pack(anchor="w")
-        ctk.CTkLabel(
-            title_box,
-            text="Gửi email thông báo tự động và theo dõi phí phạt của bạn đọc",
-            font=ctk.CTkFont(size=12),
-            text_color=THEME["text_secondary"]
-        ).pack(anchor="w")
 
         # Nút gửi email
         actions = ctk.CTkFrame(header, fg_color="transparent")

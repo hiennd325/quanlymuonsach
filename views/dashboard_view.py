@@ -35,12 +35,6 @@ class DashboardView(ctk.CTkScrollableFrame):
             font=ctk.CTkFont(size=22, weight="bold"),
             text_color=THEME["text_primary"]
         ).pack(anchor="w")
-        ctk.CTkLabel(
-            title_box,
-            text="Theo dõi chỉ số vận hành và giao dịch lưu thông thư viện",
-            font=ctk.CTkFont(size=12),
-            text_color=THEME["text_secondary"]
-        ).pack(anchor="w")
 
         # Nút hành động nhanh trên header
         action_bar = ctk.CTkFrame(header, fg_color="transparent")

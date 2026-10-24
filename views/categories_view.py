@@ -28,12 +28,6 @@ class CategoriesView(ctk.CTkFrame):
             font=ctk.CTkFont(size=22, weight="bold"),
             text_color=THEME["text_primary"]
         ).pack(anchor="w")
-        ctk.CTkLabel(
-            title_box,
-            text="Thêm, cập nhật và quản lý danh mục thể loại dùng khi nhập kho sách",
-            font=ctk.CTkFont(size=12),
-            text_color=THEME["text_secondary"]
-        ).pack(anchor="w")
 
         # Thanh tìm kiếm dạng viên thuốc
         search_box = ctk.CTkFrame(header, fg_color="transparent")
