@@ -9,6 +9,15 @@ import customtkinter as ctk
 from config import load_config
 from database import Database
 from theme import THEME, RADIUS
+from models import BookModel, MemberModel, BorrowModel, ReportModel
+from controllers import (
+    BookController,
+    MemberController,
+    BorrowController,
+    OverdueController,
+    DashboardController,
+    ReportController
+)
 from views import (
     DashboardView,
     BooksView,
@@ -35,6 +44,7 @@ class ModernLibraryApp(ctk.CTk):
         self.configure(fg_color=THEME["bg_window"])
 
         self.style_tables()
+        self.init_mvc()
         self.setup_layout()
 
         if self.db.connection_error:
@@ -187,12 +197,30 @@ class ModernLibraryApp(ctk.CTk):
 
         # Khởi tạo các Views
         self.views = {
-            "dashboard": DashboardView(self.main_container, self),
-            "books": BooksView(self.main_container, self),
-            "members": MembersView(self.main_container, self),
-            "borrows": BorrowsView(self.main_container, self),
-            "overdue": OverdueView(self.main_container, self),
-            "reports": ReportsView(self.main_container, self),
+            "dashboard": DashboardView(self.main_container, self, self.controllers["dashboard"]),
+            "books": BooksView(self.main_container, self, self.controllers["book"]),
+            "members": MembersView(self.main_container, self, self.controllers["member"]),
+            "borrows": BorrowsView(self.main_container, self, self.controllers["borrow"]),
+            "overdue": OverdueView(self.main_container, self, self.controllers["overdue"]),
+            "reports": ReportsView(self.main_container, self, self.controllers["report"]),
+        }
+
+    def init_mvc(self):
+        # 1. Models
+        self.models = {
+            "book": BookModel(self.db),
+            "member": MemberModel(self.db),
+            "borrow": BorrowModel(self.db, BookModel(self.db)),
+            "report": ReportModel(self.db),
+        }
+        # 2. Controllers
+        self.controllers = {
+            "book": BookController(self.models["book"]),
+            "member": MemberController(self.models["member"]),
+            "borrow": BorrowController(self.models["borrow"], self.models["book"], self.cfg),
+            "overdue": OverdueController(self.models["borrow"], self.cfg),
+            "dashboard": DashboardController(self.models["book"], self.models["member"], self.models["borrow"]),
+            "report": ReportController(self.models["report"]),
         }
 
     def build_error_screen(self):
@@ -287,8 +315,19 @@ class ModernLibraryApp(ctk.CTk):
             for b in self.nav_buttons.values():
                 b.configure(state="normal")
             self.db_badge.configure(text=f"MySQL: {self.cfg['db_name']}", text_color=THEME["accent_cyan"])
-            for v in self.views.values():
-                v.db = self.db
+            self.init_mvc()
+            if "dashboard" in self.views:
+                self.views["dashboard"].controller = self.controllers["dashboard"]
+            if "books" in self.views:
+                self.views["books"].controller = self.controllers["book"]
+            if "members" in self.views:
+                self.views["members"].controller = self.controllers["member"]
+            if "borrows" in self.views:
+                self.views["borrows"].controller = self.controllers["borrow"]
+            if "overdue" in self.views:
+                self.views["overdue"].controller = self.controllers["overdue"]
+            if "reports" in self.views:
+                self.views["reports"].controller = self.controllers["report"]
             messagebox.showinfo("Thành công", "Đã kết nối thành công tới MySQL.")
             self.show_page("dashboard")
             self.refresh_all()
