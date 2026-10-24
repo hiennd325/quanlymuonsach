@@ -5,14 +5,14 @@ from tkinter import ttk
 import customtkinter as ctk
 
 from theme import THEME, RADIUS
-from widgets import DonutChartWidget, PillProgressBar
+from widgets import PillProgressBar
 
 
 class DashboardView(ctk.CTkScrollableFrame):
     """
     Màn hình Tổng Quan:
     - 4 Thẻ KPI thống kê số liệu thực tế từ cơ sở dữ liệu
-    - Thẻ Phân bổ kho sách (Donut Ring Chart + Thanh tiến trình tỷ lệ)
+    - Thẻ Phân bổ kho sách (Thanh tiến trình tỷ lệ)
     - Dock thao tác nhanh điều hướng các chức năng
     - Bảng danh sách giao dịch mượn trả mới nhất
     """
@@ -122,24 +122,16 @@ class DashboardView(ctk.CTkScrollableFrame):
         ).pack(side="left")
 
         inner_dist = ctk.CTkFrame(dist_card, fg_color="transparent")
-        inner_dist.pack(fill="both", expand=True, padx=16, pady=(0, 16))
-        inner_dist.grid_columnconfigure(0, weight=1)
-        inner_dist.grid_columnconfigure(1, weight=1)
+        inner_dist.pack(fill="both", expand=True, padx=20, pady=(4, 16))
 
-        self.donut_widget = DonutChartWidget(inner_dist, title="", center_text="0", center_sub="Bản sách")
-        self.donut_widget.grid(row=0, column=0, padx=6, pady=4, sticky="nsew")
+        self.pbar_avail = PillProgressBar(inner_dist, label="Sách Sẵn Có", percent=0.85, color=THEME["primary"])
+        self.pbar_avail.pack(fill="x", pady=8)
 
-        bars_box = ctk.CTkFrame(inner_dist, fg_color="transparent")
-        bars_box.grid(row=0, column=1, padx=6, pady=4, sticky="nsew")
+        self.pbar_borrow = PillProgressBar(inner_dist, label="Đang Cho Mượn", percent=0.15, color=THEME["accent_orange"])
+        self.pbar_borrow.pack(fill="x", pady=8)
 
-        self.pbar_avail = PillProgressBar(bars_box, label="Sách Sẵn Có", percent=0.85, color=THEME["primary"])
-        self.pbar_avail.pack(fill="x", pady=6)
-
-        self.pbar_borrow = PillProgressBar(bars_box, label="Đang Cho Mượn", percent=0.15, color=THEME["accent_orange"])
-        self.pbar_borrow.pack(fill="x", pady=6)
-
-        self.pbar_members = PillProgressBar(bars_box, label="Bạn Đọc Hoạt Động", percent=0.6, color=THEME["accent_cyan"])
-        self.pbar_members.pack(fill="x", pady=6)
+        self.pbar_members = PillProgressBar(inner_dist, label="Bạn Đọc Hoạt Động", percent=0.6, color=THEME["accent_cyan"])
+        self.pbar_members.pack(fill="x", pady=8)
 
         # Cột phải: Thao Tác Nhanh
         quick_dock = ctk.CTkFrame(
@@ -256,10 +248,6 @@ class DashboardView(ctk.CTkScrollableFrame):
         self.kpi_widgets["total"].configure(text=f"{b_total:,}")
         self.kpi_widgets["borrowed"].configure(text=f"{b_borrowed:,}")
         self.kpi_widgets["members"].configure(text=f"{m_cnt:,}")
-
-        # Cập nhật Donut Chart
-        display_books = f"{b_total:,}" if b_total < 10000 else f"{b_total//1000}k"
-        self.donut_widget.update_center(display_books, "Bản sách")
 
         # Cập nhật Progress Bars
         if b_total > 0:
