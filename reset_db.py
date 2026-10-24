@@ -21,8 +21,9 @@ def reset_database():
             cur.execute("TRUNCATE TABLE borrows;")
             cur.execute("TRUNCATE TABLE members;")
             cur.execute("TRUNCATE TABLE books;")
+            cur.execute("TRUNCATE TABLE categories;")
             cur.execute("SET FOREIGN_KEY_CHECKS = 1;")
-        print("Reset thành công: Đã dọn sạch bảng borrows, members, books.")
+        print("Reset thành công: Đã dọn sạch bảng borrows, members, books, categories.")
     except Exception as e:
         print(f"Lỗi khi reset: {e}")
         sys.exit(1)

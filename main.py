@@ -9,9 +9,10 @@ import customtkinter as ctk
 from config import load_config
 from database import Database
 from theme import THEME, RADIUS
-from models import BookModel, MemberModel, BorrowModel, ReportModel
+from models import BookModel, CategoryModel, MemberModel, BorrowModel, ReportModel
 from controllers import (
     BookController,
+    CategoryController,
     MemberController,
     BorrowController,
     OverdueController,
@@ -21,6 +22,7 @@ from controllers import (
 from views import (
     DashboardView,
     BooksView,
+    CategoriesView,
     MembersView,
     BorrowsView,
     OverdueView,
@@ -95,7 +97,7 @@ class ModernLibraryApp(ctk.CTk):
             border_width=1
         )
         self.sidebar.grid(row=0, column=0, sticky="nsew")
-        self.sidebar.grid_rowconfigure(8, weight=1)
+        self.sidebar.grid_rowconfigure(9, weight=1)
 
         # Logo & Brand Header
         logo_box = ctk.CTkFrame(self.sidebar, fg_color="transparent")
@@ -122,6 +124,7 @@ class ModernLibraryApp(ctk.CTk):
         pages = [
             ("dashboard", "Tổng Quan"),
             ("books", "Quản Lý Sách"),
+            ("categories", "Thể Loại Sách"),
             ("members", "Bạn Đọc"),
             ("borrows", "Mượn & Trả Sách"),
             ("overdue", "Cảnh Báo Quá Hạn"),
@@ -146,7 +149,7 @@ class ModernLibraryApp(ctk.CTk):
 
         # Footer Sidebar (Trạng thái MySQL)
         footer = ctk.CTkFrame(self.sidebar, fg_color="transparent")
-        footer.grid(row=9, column=0, padx=14, pady=20, sticky="ew")
+        footer.grid(row=10, column=0, padx=14, pady=20, sticky="ew")
 
         # Thẻ trạng thái MySQL dạng viên thuốc
         db_card = ctk.CTkFrame(
@@ -187,6 +190,7 @@ class ModernLibraryApp(ctk.CTk):
         self.views = {
             "dashboard": DashboardView(self.main_container, self, self.controllers["dashboard"]),
             "books": BooksView(self.main_container, self, self.controllers["book"]),
+            "categories": CategoriesView(self.main_container, self, self.controllers["category"]),
             "members": MembersView(self.main_container, self, self.controllers["member"]),
             "borrows": BorrowsView(self.main_container, self, self.controllers["borrow"]),
             "overdue": OverdueView(self.main_container, self, self.controllers["overdue"]),
@@ -197,6 +201,7 @@ class ModernLibraryApp(ctk.CTk):
         # 1. Models
         self.models = {
             "book": BookModel(self.db),
+            "category": CategoryModel(self.db),
             "member": MemberModel(self.db),
             "borrow": BorrowModel(self.db, BookModel(self.db)),
             "report": ReportModel(self.db),
@@ -204,6 +209,7 @@ class ModernLibraryApp(ctk.CTk):
         # 2. Controllers
         self.controllers = {
             "book": BookController(self.models["book"]),
+            "category": CategoryController(self.models["category"], self.models["book"]),
             "member": MemberController(self.models["member"]),
             "borrow": BorrowController(self.models["borrow"], self.models["book"], self.cfg),
             "overdue": OverdueController(self.models["borrow"], self.cfg),
@@ -308,6 +314,8 @@ class ModernLibraryApp(ctk.CTk):
                 self.views["dashboard"].controller = self.controllers["dashboard"]
             if "books" in self.views:
                 self.views["books"].controller = self.controllers["book"]
+            if "categories" in self.views:
+                self.views["categories"].controller = self.controllers["category"]
             if "members" in self.views:
                 self.views["members"].controller = self.controllers["member"]
             if "borrows" in self.views:

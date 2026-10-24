@@ -40,9 +40,9 @@ class BooksView(ctk.CTkFrame):
         search_box.pack(side="right")
         self.b_search_var = tk.StringVar()
 
-        ctk.CTkEntry(
+        b_search_entry = ctk.CTkEntry(
             search_box,
-            placeholder_text="Tìm kiếm sách, tác giả, thể loại...",
+            placeholder_text="Tìm theo ID, Tên sách, Tác giả...",
             textvariable=self.b_search_var,
             width=270,
             height=38,
@@ -52,7 +52,9 @@ class BooksView(ctk.CTkFrame):
             corner_radius=RADIUS["pill"],
             text_color=THEME["text_primary"],
             placeholder_text_color=THEME["text_muted"]
-        ).pack(side="left", padx=6)
+        )
+        b_search_entry.pack(side="left", padx=6)
+        b_search_entry.bind("<Return>", lambda _: self.load_data())
 
         ctk.CTkButton(
             search_box,
@@ -118,31 +120,90 @@ class BooksView(ctk.CTkFrame):
         self.b_id_var, self.b_title_var = tk.StringVar(), tk.StringVar()
         self.b_author_var, self.b_cat_var, self.b_total_var = tk.StringVar(), tk.StringVar(), tk.StringVar(value="1")
 
-        grid_layout = [
-            ("Tên sách:", self.b_title_var, 0, 0, 260),
-            ("Tác giả:", self.b_author_var, 0, 2, 200),
-            ("Thể loại:", self.b_cat_var, 1, 0, 260),
-            ("Số lượng:", self.b_total_var, 1, 2, 200),
-        ]
-        for lbl, var, r, c, w in grid_layout:
-            ctk.CTkLabel(
-                form,
-                text=lbl,
-                font=ctk.CTkFont(size=12),
-                text_color=THEME["text_secondary"]
-            ).grid(row=r, column=c, padx=14, pady=10, sticky="e")
+        # Tên sách:
+        ctk.CTkLabel(
+            form,
+            text="Tên sách:",
+            font=ctk.CTkFont(size=12),
+            text_color=THEME["text_secondary"]
+        ).grid(row=0, column=0, padx=14, pady=10, sticky="e")
 
-            ctk.CTkEntry(
-                form,
-                textvariable=var,
-                width=w,
-                height=34,
-                fg_color=THEME["input_bg"],
-                border_color=THEME["input_border"],
-                border_width=1,
-                corner_radius=RADIUS["input"],
-                text_color=THEME["text_primary"]
-            ).grid(row=r, column=c+1, padx=6, pady=10, sticky="w")
+        ctk.CTkEntry(
+            form,
+            textvariable=self.b_title_var,
+            width=260,
+            height=34,
+            fg_color=THEME["input_bg"],
+            border_color=THEME["input_border"],
+            border_width=1,
+            corner_radius=RADIUS["input"],
+            text_color=THEME["text_primary"]
+        ).grid(row=0, column=1, padx=6, pady=10, sticky="w")
+
+        # Tác giả:
+        ctk.CTkLabel(
+            form,
+            text="Tác giả:",
+            font=ctk.CTkFont(size=12),
+            text_color=THEME["text_secondary"]
+        ).grid(row=0, column=2, padx=14, pady=10, sticky="e")
+
+        ctk.CTkEntry(
+            form,
+            textvariable=self.b_author_var,
+            width=200,
+            height=34,
+            fg_color=THEME["input_bg"],
+            border_color=THEME["input_border"],
+            border_width=1,
+            corner_radius=RADIUS["input"],
+            text_color=THEME["text_primary"]
+        ).grid(row=0, column=3, padx=6, pady=10, sticky="w")
+
+        # Thể loại (chọn từ danh sách đã thêm, không nhập tự do)
+        ctk.CTkLabel(
+            form,
+            text="Thể loại:",
+            font=ctk.CTkFont(size=12),
+            text_color=THEME["text_secondary"]
+        ).grid(row=1, column=0, padx=14, pady=10, sticky="e")
+
+        self.b_cat_combo = ctk.CTkComboBox(
+            form,
+            variable=self.b_cat_var,
+            values=["(Chưa có thể loại)"],
+            width=260,
+            height=34,
+            state="readonly",
+            fg_color=THEME["input_bg"],
+            border_color=THEME["input_border"],
+            border_width=1,
+            corner_radius=RADIUS["input"],
+            text_color=THEME["text_primary"],
+            button_color=THEME["primary"],
+            button_hover_color=THEME["primary_hover"]
+        )
+        self.b_cat_combo.grid(row=1, column=1, padx=6, pady=10, sticky="w")
+
+        # Số lượng:
+        ctk.CTkLabel(
+            form,
+            text="Số lượng:",
+            font=ctk.CTkFont(size=12),
+            text_color=THEME["text_secondary"]
+        ).grid(row=1, column=2, padx=14, pady=10, sticky="e")
+
+        ctk.CTkEntry(
+            form,
+            textvariable=self.b_total_var,
+            width=200,
+            height=34,
+            fg_color=THEME["input_bg"],
+            border_color=THEME["input_border"],
+            border_width=1,
+            corner_radius=RADIUS["input"],
+            text_color=THEME["text_primary"]
+        ).grid(row=1, column=3, padx=6, pady=10, sticky="w")
 
         # Các nút bấm thao tác dạng viên thuốc
         btn_box = ctk.CTkFrame(form, fg_color="transparent")
@@ -199,7 +260,24 @@ class BooksView(ctk.CTkFrame):
             command=self.clear_form
         ).grid(row=1, column=1, padx=4, pady=4)
 
+    def refresh_categories(self):
+        cat_ctrl = getattr(self.app, "controllers", {}).get("category")
+        cats = cat_ctrl.get_category_names() if cat_ctrl else []
+        if cats:
+            self.b_cat_combo.configure(values=cats)
+            cur = self.b_cat_var.get().strip()
+            if cur in cats:
+                self.b_cat_combo.set(cur)
+            else:
+                self.b_cat_combo.set(cats[0])
+                self.b_cat_var.set(cats[0])
+        else:
+            self.b_cat_combo.configure(values=["(Chưa có thể loại)"])
+            self.b_cat_combo.set("(Chưa có thể loại)")
+            self.b_cat_var.set("")
+
     def load_data(self):
+        self.refresh_categories()
         if not self.controller:
             self.controller = getattr(self.app, "controllers", {}).get("book")
         if not self.controller or (hasattr(self.app, "db") and self.app.db.connection_error):
@@ -221,24 +299,33 @@ class BooksView(ctk.CTkFrame):
         self.b_id_var.set(v[0])
         self.b_title_var.set(v[1])
         self.b_author_var.set(v[2])
-        self.b_cat_var.set(v[3])
+        cat_val = str(v[3])
+        self.b_cat_var.set(cat_val)
+        self.b_cat_combo.set(cat_val)
         self.b_total_var.set(v[4])
 
     def clear_form(self):
         self.b_id_var.set("")
         self.b_title_var.set("")
         self.b_author_var.set("")
-        self.b_cat_var.set("")
         self.b_total_var.set("1")
+        if self.tree.selection():
+            self.tree.selection_remove(self.tree.selection())
+        self.refresh_categories()
 
     def add_book(self):
         if not self.controller:
             self.controller = getattr(self.app, "controllers", {}).get("book")
 
+        cat_val = self.b_cat_combo.get().strip()
+        if not cat_val or cat_val == "(Chưa có thể loại)":
+            messagebox.showwarning("Lỗi", "Vui lòng chọn thể loại sách hợp lệ hoặc thêm thể loại tại mục Thể Loại Sách.")
+            return
+
         ok, msg = self.controller.add_book(
             self.b_title_var.get(),
             self.b_author_var.get(),
-            self.b_cat_var.get(),
+            cat_val,
             self.b_total_var.get()
         )
         if not ok:
@@ -254,11 +341,16 @@ class BooksView(ctk.CTkFrame):
             self.controller = getattr(self.app, "controllers", {}).get("book")
 
         b_id = self.b_id_var.get()
+        cat_val = self.b_cat_combo.get().strip()
+        if not cat_val or cat_val == "(Chưa có thể loại)":
+            messagebox.showwarning("Lỗi", "Vui lòng chọn thể loại sách hợp lệ.")
+            return
+
         ok, msg = self.controller.update_book(
             b_id,
             self.b_title_var.get(),
             self.b_author_var.get(),
-            self.b_cat_var.get(),
+            cat_val,
             self.b_total_var.get()
         )
         if not ok:

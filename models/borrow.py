@@ -9,7 +9,25 @@ class BorrowModel:
         self.db = db
         self.book_model = book_model
 
-    def get_all(self):
+    def get_all(self, keyword=None):
+        if keyword:
+            raw_kw = keyword.strip()
+            kw = f"%{raw_kw}%"
+            sql = """
+                SELECT b.id, m.name as member_name, bk.title as book_title,
+                       b.borrow_date, b.due_date, b.return_date, b.status, b.fine_amount
+                FROM borrows b
+                JOIN members m ON b.member_id = m.id
+                JOIN books bk ON b.book_id = bk.id
+                WHERE CAST(b.id AS CHAR) = %s
+                   OR m.name LIKE %s
+                   OR bk.title LIKE %s
+                   OR CAST(m.id AS CHAR) = %s
+                   OR CAST(bk.id AS CHAR) = %s
+                ORDER BY b.id DESC
+            """
+            return self.db.query(sql, (raw_kw, kw, kw, raw_kw, raw_kw))
+
         sql = """
             SELECT b.id, m.name as member_name, bk.title as book_title,
                    b.borrow_date, b.due_date, b.return_date, b.status, b.fine_amount

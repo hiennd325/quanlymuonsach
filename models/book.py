@@ -9,9 +9,10 @@ class BookModel:
 
     def get_all(self, keyword=None):
         if keyword:
-            kw = f"%{keyword.strip()}%"
-            sql = "SELECT * FROM books WHERE title LIKE %s OR author LIKE %s OR category LIKE %s ORDER BY id DESC"
-            return self.db.query(sql, (kw, kw, kw))
+            raw_kw = keyword.strip()
+            kw = f"%{raw_kw}%"
+            sql = "SELECT * FROM books WHERE CAST(id AS CHAR) = %s OR title LIKE %s OR author LIKE %s OR category LIKE %s ORDER BY id DESC"
+            return self.db.query(sql, (raw_kw, kw, kw, kw))
         return self.db.query("SELECT * FROM books ORDER BY id DESC")
 
     def get_by_id(self, book_id):

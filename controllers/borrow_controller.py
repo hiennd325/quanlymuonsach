@@ -10,8 +10,8 @@ class BorrowController:
         self.book_model = book_model
         self.cfg = cfg
 
-    def get_borrows(self):
-        rows = self.borrow_model.get_all()
+    def get_borrows(self, keyword=None):
+        rows = self.borrow_model.get_all(keyword)
         today = date.today().strftime("%Y-%m-%d")
         # Format lại trạng thái hiển thị
         for r in rows:

@@ -7,8 +7,8 @@ class MemberController:
     def __init__(self, member_model):
         self.member_model = member_model
 
-    def get_members(self):
-        return self.member_model.get_all_with_active_borrows()
+    def get_members(self, keyword=None):
+        return self.member_model.get_all_with_active_borrows(keyword)
 
     def add_member(self, name, email, phone):
         n = (name or "").strip()

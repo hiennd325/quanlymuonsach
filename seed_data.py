@@ -67,7 +67,13 @@ def seed():
             cur.execute("TRUNCATE TABLE borrows;")
             cur.execute("TRUNCATE TABLE members;")
             cur.execute("TRUNCATE TABLE books;")
+            cur.execute("TRUNCATE TABLE categories;")
             cur.execute("SET FOREIGN_KEY_CHECKS = 1;")
+
+            # 0. Chèn Thể Loại
+            unique_cats = sorted(list(set(b[2] for b in BOOKS)))
+            for cat in unique_cats:
+                cur.execute("INSERT INTO categories (name) VALUES (%s)", (cat,))
 
             # 1. Chèn Sách
             book_ids = []

@@ -7,11 +7,16 @@ class MemberModel:
     def __init__(self, db):
         self.db = db
 
-    def get_all(self):
+    def get_all(self, keyword=None):
+        if keyword:
+            raw_kw = keyword.strip()
+            kw = f"%{raw_kw}%"
+            sql = "SELECT * FROM members WHERE CAST(id AS CHAR) = %s OR name LIKE %s OR phone LIKE %s OR email LIKE %s ORDER BY id DESC"
+            return self.db.query(sql, (raw_kw, kw, kw, kw))
         return self.db.query("SELECT * FROM members ORDER BY id DESC")
 
-    def get_all_with_active_borrows(self):
-        members = self.get_all()
+    def get_all_with_active_borrows(self, keyword=None):
+        members = self.get_all(keyword)
         for m in members:
             res = self.db.query(
                 "SELECT COUNT(*) as cnt FROM borrows WHERE member_id=%s AND status='borrowed'",

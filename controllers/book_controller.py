@@ -15,6 +15,9 @@ class BookController:
         a = (author or "").strip()
         c = (category or "").strip()
 
+        if not c or c == "(Chưa có thể loại)":
+            return False, "Vui lòng chọn thể loại sách."
+
         try:
             total = int(total_str)
             if not t or total <= 0:
@@ -35,6 +38,9 @@ class BookController:
         t = (title or "").strip()
         a = (author or "").strip()
         c = (category or "").strip()
+
+        if not c or c == "(Chưa có thể loại)":
+            return False, "Vui lòng chọn thể loại sách."
 
         try:
             total = int(total_str)

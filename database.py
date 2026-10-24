@@ -39,6 +39,12 @@ class Database:
             conn = self.get_connection()
             with conn.cursor() as cur:
                 cur.execute("""
+                    CREATE TABLE IF NOT EXISTS categories (
+                        id INT AUTO_INCREMENT PRIMARY KEY,
+                        name VARCHAR(100) NOT NULL UNIQUE
+                    )
+                """)
+                cur.execute("""
                     CREATE TABLE IF NOT EXISTS books (
                         id INT AUTO_INCREMENT PRIMARY KEY,
                         title VARCHAR(255) NOT NULL,
@@ -69,6 +75,11 @@ class Database:
                         FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE,
                         FOREIGN KEY (member_id) REFERENCES members(id) ON DELETE CASCADE
                     )
+                """)
+                cur.execute("""
+                    INSERT IGNORE INTO categories (name)
+                    SELECT DISTINCT category FROM books
+                    WHERE category IS NOT NULL AND TRIM(category) != ''
                 """)
             conn.close()
             self.connection_error = None

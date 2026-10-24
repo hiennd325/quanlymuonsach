@@ -1,6 +1,7 @@
 """
 Borrows View — Màn hình Mượn & Trả Sách
 """
+import tkinter as tk
 from tkinter import ttk, messagebox
 import customtkinter as ctk
 
@@ -33,6 +34,52 @@ class BorrowsView(ctk.CTkFrame):
             font=ctk.CTkFont(size=12),
             text_color=THEME["text_secondary"]
         ).pack(anchor="w")
+
+        # Thanh tìm kiếm dạng viên thuốc
+        search_box = ctk.CTkFrame(header, fg_color="transparent")
+        search_box.pack(side="right")
+        self.br_search_var = tk.StringVar()
+
+        br_search_entry = ctk.CTkEntry(
+            search_box,
+            placeholder_text="Tìm theo ID, Tên độc giả, Tên sách...",
+            textvariable=self.br_search_var,
+            width=280,
+            height=38,
+            fg_color=THEME["input_bg"],
+            border_color=THEME["input_border"],
+            border_width=1,
+            corner_radius=RADIUS["pill"],
+            text_color=THEME["text_primary"],
+            placeholder_text_color=THEME["text_muted"]
+        )
+        br_search_entry.pack(side="left", padx=6)
+        br_search_entry.bind("<Return>", lambda _: self.load_data())
+
+        ctk.CTkButton(
+            search_box,
+            text="Tìm Kiếm",
+            width=85,
+            height=38,
+            fg_color=THEME["primary"],
+            hover_color=THEME["primary_hover"],
+            font=ctk.CTkFont(size=12, weight="bold"),
+            corner_radius=RADIUS["pill"],
+            command=self.load_data
+        ).pack(side="left", padx=3)
+
+        ctk.CTkButton(
+            search_box,
+            text="Tất Cả",
+            width=70,
+            height=38,
+            fg_color=THEME["btn_secondary"],
+            hover_color=THEME["btn_secondary_hover"],
+            text_color=THEME["btn_secondary_text"],
+            font=ctk.CTkFont(size=12),
+            corner_radius=RADIUS["pill"],
+            command=lambda: [self.br_search_var.set(""), self.load_data()]
+        ).pack(side="left", padx=3)
 
         # Thẻ Thao tác Mượn / Trả
         top = ctk.CTkFrame(
@@ -168,7 +215,8 @@ class BorrowsView(ctk.CTkFrame):
         for item in self.tree.get_children():
             self.tree.delete(item)
 
-        rows = self.controller.get_borrows()
+        kw = self.br_search_var.get().strip() if hasattr(self, "br_search_var") else None
+        rows = self.controller.get_borrows(kw)
         for r in rows:
             self.tree.insert("", "end", values=(
                 r["id"],
