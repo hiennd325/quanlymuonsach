@@ -25,7 +25,7 @@ class OverdueView(ctk.CTkFrame):
             title_box,
             text="Cảnh Báo Quá Hạn & Quản Lý Phạt",
             font=ctk.CTkFont(size=22, weight="bold"),
-            text_color=THEME["text_white"]
+            text_color=THEME["text_primary"]
         ).pack(anchor="w")
         ctk.CTkLabel(
             title_box,
@@ -55,7 +55,7 @@ class OverdueView(ctk.CTkFrame):
             height=38,
             fg_color=THEME["accent_orange"],
             hover_color=THEME["accent_orange_hover"],
-            text_color="#10141D",
+            text_color=THEME["text_white"],
             font=ctk.CTkFont(size=12, weight="bold"),
             corner_radius=RADIUS["pill"],
             command=self.send_bulk_reminders
@@ -75,7 +75,7 @@ class OverdueView(ctk.CTkFrame):
             self.overdue_banner,
             text="...",
             font=ctk.CTkFont(size=13, weight="bold"),
-            text_color=THEME["text_white"]
+            text_color=THEME["accent_red"]
         )
         self.overdue_summary.pack(padx=16, pady=12)
 
@@ -133,10 +133,16 @@ class OverdueView(ctk.CTkFrame):
 
         if len(rows) > 0:
             self.overdue_banner.configure(fg_color=THEME["accent_red_subtle"], border_color=THEME["accent_red"])
-            self.overdue_summary.configure(text=f"Phát hiện {len(rows)} lượt mượn quá hạn  |  Tổng tiền phạt ước tính: {total_fine:,} VND")
+            self.overdue_summary.configure(
+                text=f"Phát hiện {len(rows)} lượt mượn quá hạn  |  Tổng tiền phạt ước tính: {total_fine:,} VND",
+                text_color=THEME["accent_red"]
+            )
         else:
             self.overdue_banner.configure(fg_color=THEME["accent_cyan_subtle"], border_color=THEME["accent_cyan"])
-            self.overdue_summary.configure(text="Hiện không có lượt mượn nào bị quá hạn.")
+            self.overdue_summary.configure(
+                text="Hiện không có lượt mượn nào bị quá hạn.",
+                text_color=THEME["accent_cyan"]
+            )
 
     def send_single_reminder(self):
         sel = self.tree.selection()

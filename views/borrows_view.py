@@ -25,7 +25,7 @@ class BorrowsView(ctk.CTkFrame):
             title_box,
             text="Giao Dịch Mượn & Trả Sách",
             font=ctk.CTkFont(size=22, weight="bold"),
-            text_color=THEME["text_white"]
+            text_color=THEME["text_primary"]
         ).pack(anchor="w")
         ctk.CTkLabel(
             title_box,
@@ -59,7 +59,7 @@ class BorrowsView(ctk.CTkFrame):
             border_color=THEME["input_border"],
             border_width=1,
             corner_radius=RADIUS["input"],
-            text_color=THEME["text_white"]
+            text_color=THEME["text_primary"]
         )
         self.borrow_mem_id.grid(row=0, column=1, padx=6, pady=14)
 
@@ -78,7 +78,7 @@ class BorrowsView(ctk.CTkFrame):
             border_color=THEME["input_border"],
             border_width=1,
             corner_radius=RADIUS["input"],
-            text_color=THEME["text_white"]
+            text_color=THEME["text_primary"]
         )
         self.borrow_book_id.grid(row=0, column=3, padx=6, pady=14)
 
@@ -98,7 +98,7 @@ class BorrowsView(ctk.CTkFrame):
             border_color=THEME["input_border"],
             border_width=1,
             corner_radius=RADIUS["input"],
-            text_color=THEME["text_white"],
+            text_color=THEME["text_primary"],
             button_color=THEME["primary"],
             button_hover_color=THEME["primary_hover"]
         )
@@ -123,7 +123,7 @@ class BorrowsView(ctk.CTkFrame):
             height=36,
             fg_color=THEME["accent_cyan"],
             hover_color=THEME["accent_cyan_hover"],
-            text_color="#0B0E17",
+            text_color=THEME["text_white"],
             font=ctk.CTkFont(size=12, weight="bold"),
             corner_radius=RADIUS["pill"]
         ).grid(row=0, column=7, padx=6)

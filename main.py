@@ -38,8 +38,8 @@ class ModernLibraryApp(ctk.CTk):
         self.geometry("1240x760")
         self.minsize(1020, 660)
 
-        # Cài đặt giao diện tối Obsidian
-        ctk.set_appearance_mode("Dark")
+        # Cài đặt giao diện sáng (Light Mode Only)
+        ctk.set_appearance_mode("Light")
         ctk.set_default_color_theme("blue")
         self.configure(fg_color=THEME["bg_window"])
 
@@ -85,14 +85,14 @@ class ModernLibraryApp(ctk.CTk):
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=1)
 
-        # 1. Sidebar bên trái (Dark Obsidian)
+        # 1. Sidebar bên trái (Giao diện Sáng)
         self.sidebar = ctk.CTkFrame(
             self,
             width=240,
             corner_radius=0,
             fg_color=THEME["bg_sidebar"],
             border_color=THEME["card_border"],
-            border_width=0
+            border_width=1
         )
         self.sidebar.grid(row=0, column=0, sticky="nsew")
         self.sidebar.grid_rowconfigure(8, weight=1)
@@ -105,7 +105,7 @@ class ModernLibraryApp(ctk.CTk):
             logo_box,
             text="LibMaster",
             font=ctk.CTkFont(size=22, weight="bold"),
-            text_color=THEME["text_white"]
+            text_color=THEME["text_primary"]
         ).pack(anchor="w")
 
         tag_box = ctk.CTkFrame(logo_box, fg_color=THEME["primary_subtle"], corner_radius=8)
@@ -137,14 +137,14 @@ class ModernLibraryApp(ctk.CTk):
                 height=44,
                 corner_radius=RADIUS["pill"],
                 fg_color="transparent",
-                hover_color=THEME["card_bg"],
+                hover_color=THEME["card_inner"],
                 text_color=THEME["text_secondary"],
                 command=lambda k=key: self.show_page(k)
             )
             btn.grid(row=i, column=0, padx=14, pady=4, sticky="ew")
             self.nav_buttons[key] = btn
 
-        # Footer Sidebar (Trạng thái MySQL & Giao diện)
+        # Footer Sidebar (Trạng thái MySQL)
         footer = ctk.CTkFrame(self.sidebar, fg_color="transparent")
         footer.grid(row=9, column=0, padx=14, pady=20, sticky="ew")
 
@@ -156,7 +156,7 @@ class ModernLibraryApp(ctk.CTk):
             border_color=THEME["card_border"],
             border_width=1
         )
-        db_card.pack(fill="x", pady=(0, 12))
+        db_card.pack(fill="x")
 
         if self.db.connection_error:
             db_txt = "MySQL: Ngoại Tuyến"
@@ -172,18 +172,6 @@ class ModernLibraryApp(ctk.CTk):
             text_color=db_color
         )
         self.db_badge.pack(padx=12, pady=8, anchor="w")
-
-        theme_switch = ctk.CTkOptionMenu(
-            footer,
-            values=["Dark", "Light", "System"],
-            command=ctk.set_appearance_mode,
-            height=32,
-            fg_color=THEME["card_inner"],
-            button_color=THEME["primary"],
-            button_hover_color=THEME["primary_hover"],
-            corner_radius=RADIUS["pill"]
-        )
-        theme_switch.pack(fill="x")
 
         # 2. Vùng chứa nội dung chính (Main Container)
         self.main_container = ctk.CTkFrame(self, fg_color=THEME["bg_main"], corner_radius=0)
@@ -247,7 +235,7 @@ class ModernLibraryApp(ctk.CTk):
             box,
             text="Không Thể Kết Nối Tới MySQL",
             font=ctk.CTkFont(size=22, weight="bold"),
-            text_color=THEME["text_white"]
+            text_color=THEME["text_primary"]
         ).pack(pady=(0, 10))
 
         desc = (

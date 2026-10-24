@@ -26,7 +26,7 @@ class BooksView(ctk.CTkFrame):
             title_box,
             text="Quản Lý Kho Sách",
             font=ctk.CTkFont(size=22, weight="bold"),
-            text_color=THEME["text_white"]
+            text_color=THEME["text_primary"]
         ).pack(anchor="w")
         ctk.CTkLabel(
             title_box,
@@ -50,7 +50,7 @@ class BooksView(ctk.CTkFrame):
             border_color=THEME["input_border"],
             border_width=1,
             corner_radius=RADIUS["pill"],
-            text_color=THEME["text_white"],
+            text_color=THEME["text_primary"],
             placeholder_text_color=THEME["text_muted"]
         ).pack(side="left", padx=6)
 
@@ -141,7 +141,7 @@ class BooksView(ctk.CTkFrame):
                 border_color=THEME["input_border"],
                 border_width=1,
                 corner_radius=RADIUS["input"],
-                text_color=THEME["text_white"]
+                text_color=THEME["text_primary"]
             ).grid(row=r, column=c+1, padx=6, pady=10, sticky="w")
 
         # Các nút bấm thao tác dạng viên thuốc
@@ -167,7 +167,7 @@ class BooksView(ctk.CTkFrame):
             height=34,
             fg_color=THEME["accent_orange"],
             hover_color=THEME["accent_orange_hover"],
-            text_color="#10141D",
+            text_color=THEME["text_white"],
             font=ctk.CTkFont(size=12, weight="bold"),
             corner_radius=RADIUS["pill"],
             command=self.update_book
@@ -180,6 +180,7 @@ class BooksView(ctk.CTkFrame):
             height=34,
             fg_color=THEME["accent_red"],
             hover_color=THEME["accent_red_hover"],
+            text_color=THEME["text_white"],
             font=ctk.CTkFont(size=12, weight="bold"),
             corner_radius=RADIUS["pill"],
             command=self.delete_book

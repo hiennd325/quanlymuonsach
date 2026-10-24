@@ -38,7 +38,7 @@ class WavyChartWidget(ctk.CTkFrame):
             header,
             text=title,
             font=ctk.CTkFont(size=14, weight="bold"),
-            text_color=THEME["text_white"]
+            text_color=THEME["text_primary"]
         ).pack(side="left")
 
         # Canvas vẽ sóng
@@ -77,7 +77,7 @@ class WavyChartWidget(ctk.CTkFrame):
             info_box,
             text="62,970",
             font=ctk.CTkFont(size=20, weight="bold"),
-            text_color=THEME["text_white"]
+            text_color=THEME["text_primary"]
         )
         self.stat_val_lbl.pack(anchor="w")
 
@@ -127,28 +127,28 @@ class WavyChartWidget(ctk.CTkFrame):
             y = pad_top + usable_h - (val / 100.0 * usable_h)
             pts.extend([x, y])
 
-        # 1. Vẽ vùng gradient / polygon đổ bóng tím bên dưới
+        # 1. Vẽ vùng gradient / polygon đổ bóng tím bên dưới (nền sáng)
         poly_pts = [pts[0], h - pad_bottom] + pts + [pts[-2], h - pad_bottom]
-        self.canvas.create_polygon(poly_pts, fill="#251A46", outline="", smooth=True)
+        self.canvas.create_polygon(poly_pts, fill="#F3EEFF", outline="", smooth=True)
 
-        # 2. Vẽ đường sóng neon tím chính
-        self.canvas.create_line(pts, fill=THEME["primary_glow"], width=3, smooth=True)
+        # 2. Vẽ đường sóng tím chính
+        self.canvas.create_line(pts, fill=THEME["primary"], width=3, smooth=True)
 
-        # 3. Điểm sáng neon tại tháng mới nhất (tháng cuối cùng)
+        # 3. Điểm nhấn tại tháng mới nhất (tháng cuối cùng)
         last_x, last_y = pts[-2], pts[-1]
         self.canvas.create_oval(
             last_x - 7, last_y - 7, last_x + 7, last_y + 7,
-            fill="#5E43C4", outline=""
+            fill="#DDD6FE", outline=""
         )
         self.canvas.create_oval(
             last_x - 3.5, last_y - 3.5, last_x + 3.5, last_y + 3.5,
-            fill=THEME["text_white"], outline=""
+            fill=THEME["primary"], outline=""
         )
 
         # 4. Nhãn tháng phía dưới
         for i, m in enumerate(self.months):
             x = pad_x + i * step_x
-            color = THEME["text_white"] if i == n - 1 else THEME["text_muted"]
+            color = THEME["text_primary"] if i == n - 1 else THEME["text_muted"]
             font_spec = ("Segoe UI", 9, "bold") if i == n - 1 else ("Segoe UI", 9)
             self.canvas.create_text(x, h - 12, text=m, fill=color, font=font_spec)
 
@@ -176,7 +176,7 @@ class DonutChartWidget(ctk.CTkFrame):
             header,
             text=title,
             font=ctk.CTkFont(size=14, weight="bold"),
-            text_color=THEME["text_white"]
+            text_color=THEME["text_primary"]
         ).pack(side="left")
 
         # Container biểu đồ
@@ -228,7 +228,7 @@ class DonutChartWidget(ctk.CTkFrame):
         self.canvas.create_text(
             cx, cy - 6,
             text=self.center_text,
-            fill=THEME["text_white"],
+            fill=THEME["text_primary"],
             font=("Segoe UI", 16, "bold")
         )
         self.canvas.create_text(

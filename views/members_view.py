@@ -26,7 +26,7 @@ class MembersView(ctk.CTkFrame):
             title_box,
             text="Quản Lý Bạn Đọc",
             font=ctk.CTkFont(size=22, weight="bold"),
-            text_color=THEME["text_white"]
+            text_color=THEME["text_primary"]
         ).pack(anchor="w")
         ctk.CTkLabel(
             title_box,
@@ -68,7 +68,7 @@ class MembersView(ctk.CTkFrame):
                 border_color=THEME["input_border"],
                 border_width=1,
                 corner_radius=RADIUS["input"],
-                text_color=THEME["text_white"]
+                text_color=THEME["text_primary"]
             ).grid(row=0, column=i*2+1, padx=6, pady=14)
 
         ctk.CTkButton(
@@ -90,6 +90,7 @@ class MembersView(ctk.CTkFrame):
             height=36,
             fg_color=THEME["accent_red"],
             hover_color=THEME["accent_red_hover"],
+            text_color=THEME["text_white"],
             font=ctk.CTkFont(size=12, weight="bold"),
             corner_radius=RADIUS["pill"],
             command=self.delete_member

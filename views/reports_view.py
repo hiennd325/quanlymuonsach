@@ -30,7 +30,7 @@ class ReportsView(ctk.CTkScrollableFrame):
             title_box,
             text="Báo Cáo & Phân Tích Thống Kê",
             font=ctk.CTkFont(size=22, weight="bold"),
-            text_color=THEME["text_white"]
+            text_color=THEME["text_primary"]
         ).pack(anchor="w")
         ctk.CTkLabel(
             title_box,
@@ -98,7 +98,7 @@ class ReportsView(ctk.CTkScrollableFrame):
             c1,
             text="Top Sách Được Mượn Nhiều Nhất",
             font=ctk.CTkFont(size=14, weight="bold"),
-            text_color=THEME["text_white"]
+            text_color=THEME["text_primary"]
         ).pack(anchor="w", padx=16, pady=(14, 8))
 
         self.top_books_tree = ttk.Treeview(c1, columns=("title", "count"), show="headings", height=8)
@@ -121,7 +121,7 @@ class ReportsView(ctk.CTkScrollableFrame):
             c2,
             text="Thể Loại Sách Phổ Biến Nhất",
             font=ctk.CTkFont(size=14, weight="bold"),
-            text_color=THEME["text_white"]
+            text_color=THEME["text_primary"]
         ).pack(anchor="w", padx=16, pady=(14, 8))
 
         self.top_cats_tree = ttk.Treeview(c2, columns=("cat", "count"), show="headings", height=8)
