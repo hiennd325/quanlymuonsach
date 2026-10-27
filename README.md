@@ -66,7 +66,7 @@ docker exec -i library-mysql mysql -u root -pAdmin123 library_db < schema.sql
    ```
    *Các thư viện chính bao gồm:*
    - `customtkinter`: Giao diện người dùng hiện đại, hỗ trợ Dark/Light mode.
-   - `pymysql`: Thư viện kết nối và làm việc với MySQL Database.
+   - `mysql-connector-python`: Thư viện kết nối và làm việc với MySQL Database.
 
 ---
 
