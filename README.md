@@ -6,42 +6,21 @@
 
 ## 📋 Mục Lục
 1. [Yêu Cầu Hệ Thống](#-yêu-cầu-hệ-thống)
-2. [Cài Đặt & Cấu Hình MySQL](#-cài-đặt--cấu-hình-mysql)
-3. [Cài Đặt Thư Viện Python](#-cài-đặt-thư-viện-python)
-4. [Cấu Hình Môi Trường (.env)](#-cấu-hình-môi-trường-env)
+2. [Cài Đặt Thư Viện Python](#-cài-đặt-thư-viện-python)
+3. [Cấu Hình Môi Trường (.env)](#-cấu-hình-môi-trường-env)
+4. [Cơ Sở Dữ Liệu MySQL](#-cơ-sở-dữ-liệu-mysql)
 5. [Khởi Tạo Dữ Liệu](#-khởi-tạo-dữ-liệu)
 6. [Cách Chạy Ứng Dụng](#-cách-chạy-ứng-dụng)
-7. [Cấu Trúc Thư Mục Dự Án](#-cấu-trúc-thư-mục-dự-án)
+7. [Chạy Kiểm Thử (Unit Tests)](#-chạy-kiểm-thử-unit-tests)
+8. [Cấu Trúc Thư Mục Dự Án](#-cấu-trúc-thư-mục-dự-án)
 
 ---
 
 ## 💻 Yêu Cầu Hệ Thống
 
 - **Python**: Phiên bản 3.10 trở lên.
-- **MySQL Server** hoặc **MariaDB** (hoặc dùng XAMPP / WampServer / Docker).
+- **MySQL Server** hoặc **MariaDB** (hoặc dùng qua XAMPP / WampServer / Docker).
 - **Hệ điều hành**: Windows, Linux hoặc macOS.
-
----
-
-## 🗄️ Cài Đặt & Cấu Hình MySQL
-
-### Cách 1: Sử dụng MySQL Server có sẵn hoặc XAMPP
-1. Mở dịch vụ MySQL Server (hoặc bật nút **Start** tại mục MySQL trên bảng điều khiển XAMPP).
-2. Mở MySQL CLI / phpMyAdmin / MySQL Workbench / DBeaver và chạy nội dung file `schema.sql` để tạo database và các bảng:
-   ```bash
-   mysql -u root -p < schema.sql
-   ```
-   *(Nếu dùng phpMyAdmin: Tạo cơ sở dữ liệu mới hoặc bấm vào tab **Import** và chọn file `schema.sql`)*
-
-### Cách 2: Sử dụng Docker (Nhanh & Tiện lợi)
-Nếu bạn đã có Docker, chạy một dòng lệnh sau:
-```bash
-docker run -d --name library-mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=Admin123 -e MYSQL_DATABASE=library_db mysql:8.0
-```
-Sau đó import schema:
-```bash
-docker exec -i library-mysql mysql -u root -pAdmin123 library_db < schema.sql
-```
 
 ---
 
@@ -66,13 +45,13 @@ docker exec -i library-mysql mysql -u root -pAdmin123 library_db < schema.sql
    ```
    *Các thư viện chính bao gồm:*
    - `customtkinter`: Giao diện người dùng hiện đại, hỗ trợ Dark/Light mode.
-   - `mysql-connector-python`: Thư viện kết nối và làm việc với MySQL Database.
+   - `mysql-connector-python`: Thư viện chính thức từ Oracle để kết nối và làm việc với MySQL Database.
 
 ---
 
 ## ⚙️ Cấu Hình Môi Trường (.env)
 
-Tạo file `.env` tại thư mục gốc của dự án (hoặc chỉnh sửa file `.env` có sẵn) theo thông tin MySQL của máy bạn:
+Tạo file `.env` tại thư mục gốc của dự án (hoặc chỉnh sửa file `.env` có sẵn) theo thông tin tài khoản MySQL trên máy bạn:
 
 ```env
 # Cấu hình Cơ Sở Dữ Liệu MySQL
@@ -93,23 +72,45 @@ SMTP_PASSWORD=your_app_password
 ```
 
 > **Lưu ý:**
-> - Thay đổi `DB_USER` và `DB_PASSWORD` cho khớp với mật khẩu tài khoản MySQL trên máy bạn.
+> - Thay đổi `DB_USER` và `DB_PASSWORD` cho khớp với mật khẩu tài khoản MySQL của bạn.
 > - Cấu hình email là tuỳ chọn; nếu không dùng tính năng gửi mail, bạn có thể để nguyên giá trị mặc định.
+
+---
+
+## 🗄️ Cơ Sở Dữ Liệu MySQL
+
+> [!IMPORTANT]
+> **Bạn KHÔNG cần phải vào SQL để chạy file `schema.sql` thủ công!**  
+> Khi ứng dụng khởi động hoặc khi chạy lệnh tạo dữ liệu mẫu, hệ thống sẽ **tự động kết nối và tạo mới Database (`library_db`) cùng toàn bộ các bảng** (`categories`, `books`, `members`, `borrows`) nếu chưa tồn tại.
+
+Bạn chỉ cần đảm bảo dịch vụ MySQL đang hoạt động:
+
+### Cách 1: Sử dụng MySQL Server có sẵn hoặc XAMPP
+- Bật dịch vụ MySQL Server trên máy (hoặc nhấn nút **Start** tại mục MySQL trong bảng điều khiển XAMPP).
+- Cấu hình đúng `DB_USER` và `DB_PASSWORD` trong file `.env`.
+
+### Cách 2: Sử dụng Docker
+Nếu máy bạn có Docker, chỉ cần khởi chạy container MySQL:
+```bash
+docker run -d --name library-mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=Admin123 -e MYSQL_DATABASE=library_db mysql:8.0
+```
+
+*(File `schema.sql` được đính kèm sẵn trong mã nguồn chỉ đóng vai trò dự phòng nếu bạn muốn tự import thủ công qua phpMyAdmin / Workbench / DBeaver).*
 
 ---
 
 ## 🚀 Khởi Tạo Dữ Liệu
 
-Dự án cung cấp sẵn 2 script hỗ trợ quản lý dữ liệu:
+Dự án cung cấp sẵn các script hỗ trợ quản lý dữ liệu:
 
-1. **Tạo dữ liệu mẫu ban đầu (Seed Data):**
-   Chạy lệnh sau để tự động tạo danh mục, các đầu sách, độc giả và lịch sử mượn trả mẫu (bao gồm các phiếu quá hạn để kiểm thử tính năng):
+1. **Tạo dữ liệu mẫu ban đầu (Seed Data - Khuyến nghị khi mới cài đặt):**
+   Tự động khởi tạo cấu trúc database, nạp danh mục, 18 đầu sách, 12 độc giả cùng các giao dịch mượn/trả và quá hạn để kiểm thử đầy đủ các chức năng:
    ```bash
    python seed_data.py
    ```
 
 2. **Xóa trắng dữ liệu (Reset Database):**
-   Nếu cần làm sạch dữ liệu trong cơ sở dữ liệu:
+   Nếu cần làm sạch toàn bộ dữ liệu trong các bảng và đưa ID về 1:
    ```bash
    python reset_db.py
    ```
@@ -118,17 +119,27 @@ Dự án cung cấp sẵn 2 script hỗ trợ quản lý dữ liệu:
 
 ## 🖥️ Cách Chạy Ứng Dụng
 
-Sau khi cấu hình xong MySQL và cài đặt thư viện:
+Sau khi cấu hình xong file `.env`:
 
 ```bash
 python main.py
 ```
 *(hoặc chạy qua file đại diện `python app.py`)*
 
-### Chạy ở chế độ kiểm thử tự động (Self Test)
-Nếu muốn kiểm tra nhanh kết nối database, nạp dữ liệu và các module chức năng:
+### Chạy ở chế độ kiểm thử nhanh giao diện (Self Test)
+Nếu muốn kiểm tra nhanh nạp module và khởi động:
 ```bash
 python app.py --test
+```
+
+---
+
+## 🧪 Chạy Kiểm Thử (Unit Tests)
+
+Dự án tích hợp bộ kiểm thử tự động toàn diện mô hình MVC (Model - View - Controller):
+
+```bash
+python -m unittest discover tests
 ```
 
 ---
@@ -139,12 +150,13 @@ python app.py --test
 ├── controllers/          # Bộ điều khiển trung gian kết nối View và Model
 ├── models/               # Các mô hình dữ liệu (Sách, Thành viên, Mượn trả...)
 ├── views/                # Giao diện các màn hình (CustomTkinter)
+├── tests/                # Bộ kiểm thử tự động MVC
 ├── app.py                # Điểm khởi chạy ứng dụng (Wrapper)
 ├── main.py               # Ứng dụng chính & Giao diện Dashboard tổng thể
-├── database.py           # Quản lý kết nối và truy vấn MySQL
+├── database.py           # Quản lý kết nối và truy vấn MySQL (mysql-connector-python)
 ├── config.py             # Đọc cấu hình từ file .env
 ├── mailer.py             # Xử lý gửi email thông báo quá hạn
-├── schema.sql            # Script SQL tạo cơ sở dữ liệu và bảng
+├── schema.sql            # Script SQL dự phòng tạo cấu trúc database
 ├── seed_data.py          # Script chèn dữ liệu mẫu thử nghiệm
 ├── reset_db.py           # Script dọn dẹp/làm rỗng database
 ├── theme.py & widgets.py # Định nghĩa theme giao diện, bảng, thanh tìm kiếm
